@@ -42,9 +42,9 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            overflow: hidden;
             color: var(--primary);
             position: relative;
+            overflow-x: hidden;
         }
 
         /* Animated background elements */
@@ -63,12 +63,8 @@
         }
 
         @keyframes grid-shift {
-            0% {
-                transform: translateY(0);
-            }
-            100% {
-                transform: translateY(60px);
-            }
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(60px) translateX(60px); }
         }
 
         .floating-orbs {
@@ -128,6 +124,74 @@
         @keyframes float-3 {
             0%, 100% { transform: translate(0, 0) scale(1); }
             50% { transform: translate(-120px, 120px) scale(1.2); }
+        }
+
+        /* Sticky Navigation */
+        .sticky-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 15px;
+            background: rgba(5, 8, 16, 0.8);
+            padding: 15px 25px;
+            border: 2px solid var(--primary);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .menu-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--tertiary);
+            color: var(--tertiary);
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            letter-spacing: 1px;
+        }
+
+        .menu-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 15px var(--tertiary);
+            transform: scale(1.05);
+        }
+
+        .menu-btn.active {
+            background: var(--tertiary);
+            color: var(--darker-bg);
+            box-shadow: 0 0 20px var(--tertiary);
+        }
+
+        /* Horizontal Scroll Container */
+        .scroll-container {
+            display: flex;
+            width: 400vw;
+            height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .scroll-section {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* Main Section */
+        .main-section {
+            width: 100vw !important;
         }
 
         .container {
@@ -306,6 +370,14 @@
                 inset 0 0 30px rgba(0, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-section:hover {
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.6),
+                inset 0 0 30px rgba(0, 255, 255, 0.2);
         }
 
         .progress-section::before {
@@ -374,6 +446,12 @@
             border: 2px solid var(--primary);
             z-index: 1;
             box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-bar-container:hover {
+            box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3);
         }
 
         .progress-bar {
@@ -430,7 +508,7 @@
             letter-spacing: 1px;
         }
 
-        /* Status indicators */
+        /* Status indicators with mini-games */
         .status-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -454,6 +532,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--tertiary);
+            cursor: pointer;
         }
 
         .status-item::before {
@@ -518,21 +597,331 @@
             50% { opacity: 0.4; }
         }
 
-        .dots {
-            display: inline-block;
-            width: 30px;
+        /* Mini-game Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 8, 16, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 3px solid var(--primary);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            font-size: 2em;
+            color: var(--secondary);
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px var(--secondary);
+            letter-spacing: 2px;
+        }
+
+        .modal-content p {
+            font-size: 1em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        /* Mini-game Canvas */
+        .game-canvas {
+            width: 100%;
+            height: 300px;
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid var(--tertiary);
+            border-radius: 12px;
+            margin: 30px 0;
+            display: none;
+        }
+
+        .game-canvas.active {
+            display: block;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            margin: 30px 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .game-btn {
+            padding: 12px 24px;
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+
+        .game-btn:hover {
+            background: rgba(255, 255, 0, 0.2);
+            box-shadow: 0 0 20px var(--accent);
+            transform: scale(1.05);
+        }
+
+        .game-btn.complete {
+            background: var(--tertiary);
+            color: var(--darker-bg);
+            border-color: var(--tertiary);
+            box-shadow: 0 0 25px var(--tertiary);
+        }
+
+        /* Contribution Modal */
+        .contribution-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 8, 16, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .contribution-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .contribution-content {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(255, 0, 255, 0.15));
+            border: 3px solid var(--secondary);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 700px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 0, 255, 0.5);
+            position: relative;
+        }
+
+        .contribution-content h2 {
+            font-size: 2.2em;
+            color: var(--secondary);
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px var(--secondary);
+            letter-spacing: 2px;
+        }
+
+        .contribution-content p {
+            font-size: 1.1em;
+            color: var(--primary);
+            margin-bottom: 40px;
+            line-height: 1.8;
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .contribution-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .contrib-btn {
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 1em;
+            letter-spacing: 1px;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .contrib-btn:hover {
+            background: rgba(255, 255, 0, 0.2);
+            box-shadow: 0 0 25px var(--accent);
+            transform: scale(1.05);
+        }
+
+        .contrib-btn.yes {
+            border-color: var(--tertiary);
+            color: var(--tertiary);
+        }
+
+        .contrib-btn.yes:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 25px var(--tertiary);
+        }
+
+        /* Form Styles */
+        .form-container {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
             text-align: left;
-            animation: dots-animation 1.5s steps(4, end) infinite;
         }
 
-        @keyframes dots-animation {
-            0%, 20% { content: ''; width: 0; }
-            40% { content: '.'; width: 10px; }
-            60% { content: '..'; width: 20px; }
-            80%, 100% { content: '...'; width: 30px; }
+        .form-group label {
+            display: block;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-shadow: 0 0 8px var(--primary);
         }
 
-        /* Particle effects */
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            box-shadow: 0 0 20px var(--primary);
+            border-color: var(--secondary);
+        }
+
+        .submit-btn {
+            padding: 12px 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: var(--darker-bg);
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 1em;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* Hidden Sections */
+        .hidden-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.05), rgba(255, 0, 255, 0.05));
+            border-left: 4px solid var(--primary);
+            border-right: 4px solid var(--secondary);
+        }
+
+        .hidden-section h2 {
+            font-size: 2.5em;
+            color: var(--accent);
+            margin-bottom: 40px;
+            text-shadow: 0 0 30px var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .fact-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .fact-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.4);
+            border-color: var(--secondary);
+        }
+
+        .fact-card h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            text-shadow: 0 0 15px var(--secondary);
+        }
+
+        .fact-card p {
+            color: var(--primary);
+            line-height: 1.8;
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .fact-card .date {
+            color: var(--tertiary);
+            font-size: 0.85em;
+            margin-top: 15px;
+            font-weight: 700;
+        }
+
+        /* Particles */
         .particles {
             position: fixed;
             width: 100%;
@@ -589,6 +978,23 @@
             text-shadow: 0 0 15px var(--accent);
         }
 
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            color: var(--accent);
+            font-size: 0.85em;
+            text-shadow: 0 0 10px var(--accent);
+            animation: bounce 2s ease-in-out infinite;
+            text-align: center;
+            z-index: 50;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .main-logo {
@@ -627,6 +1033,23 @@
                 font-size: 0.8em;
                 padding: 10px 20px;
             }
+
+            .sticky-menu {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 15px;
+            }
+
+            .menu-btn {
+                padding: 6px 12px;
+                font-size: 0.7em;
+            }
+
+            .scroll-hint {
+                right: 20px;
+                bottom: 20px;
+                font-size: 0.7em;
+            }
         }
     </style>
 </head>
@@ -640,59 +1063,214 @@
     </div>
     <div class="particles" id="particles"></div>
 
-    <!-- Main content -->
-    <div class="container">
-        <!-- Construction Badge -->
-        <div class="construction-badge">🔨 Under Construction</div>
+    <!-- Sticky Menu -->
+    <div class="sticky-menu">
+        <button class="menu-btn active" data-section="main">MAIN</button>
+        <button class="menu-btn" data-section="facts">FACTS</button>
+        <button class="menu-btn" data-section="ai-models">AI TOP</button>
+        <button class="menu-btn" data-section="trends">TRENDS</button>
+    </div>
 
-        <!-- Logo with Glitch Effect -->
-        <div class="glitch-container">
-            <h1 class="main-logo">AutenTICS</h1>
+    <!-- Main Scroll Container -->
+    <div class="scroll-container">
+        <!-- MAIN SECTION -->
+        <div class="scroll-section main-section">
+            <div class="container">
+                <!-- Construction Badge -->
+                <div class="construction-badge">🔨 Under Construction</div>
+
+                <!-- Logo with Glitch Effect -->
+                <div class="glitch-container">
+                    <h1 class="main-logo">AutenTICS</h1>
+                </div>
+
+                <!-- Domain -->
+                <a href="https://elautentico.online" class="domain-link" target="_blank" rel="noopener noreferrer">
+                    💎 elautentico.online 💎
+                </a>
+
+                <!-- Subtitle -->
+                <p class="subtitle">The Future of Authentication Awaits</p>
+
+                <!-- Progress Section (CLICKABLE) -->
+                <div class="progress-section" id="progressSection">
+                    <div class="progress-label">System Initialization</div>
+                    <div class="percentage-display" id="percentage">90%</div>
+                    <div class="progress-bar-container" id="progressBar">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="progress-details">
+                        <span>🔐 CORE SYSTEMS</span>
+                        <span>⚡ OPTIMIZATION ACTIVE</span>
+                        <span>🚀 LAUNCH IMMINENT</span>
+                    </div>
+
+                    <!-- Status indicators with mini-games -->
+                    <div class="status-grid">
+                        <div class="status-item" data-game="neural">
+                            <span class="status-dot"></span>Neural Architecture
+                        </div>
+                        <div class="status-item" data-game="security">
+                            <span class="status-dot"></span>Security Protocols
+                        </div>
+                        <div class="status-item" data-game="infrastructure">
+                            <span class="status-dot"></span>Global Infrastructure
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coming Soon -->
+                <p class="coming-soon">
+                    Launching Soon<span class="dots"></span>
+                </p>
+
+                <!-- Footer -->
+                <div class="footer-info">
+                    © 2026 AutenTICS | <a href="https://elautentico.online" target="_blank">elautentico.online</a> | Building the Future
+                </div>
+
+                <div class="scroll-hint">➜ SCROLL RIGHT FOR SECRETS ➜</div>
+            </div>
         </div>
 
-        <!-- Domain -->
-        <a href="https://elautentico.online" class="domain-link" target="_blank" rel="noopener noreferrer">
-            💎 elautentico.online 💎
-        </a>
-
-        <!-- Subtitle -->
-        <p class="subtitle">The Future of Authentication Awaits</p>
-
-        <!-- Progress Section -->
-        <div class="progress-section">
-            <div class="progress-label">System Initialization</div>
-            <div class="percentage-display" id="percentage">90%</div>
-            <div class="progress-bar-container">
-                <div class="progress-bar"></div>
-            </div>
-            <div class="progress-details">
-                <span>🔐 CORE SYSTEMS</span>
-                <span>⚡ OPTIMIZATION ACTIVE</span>
-                <span>🚀 LAUNCH IMMINENT</span>
-            </div>
-
-            <!-- Status indicators -->
-            <div class="status-grid">
-                <div class="status-item">
-                    <span class="status-dot"></span>Neural Architecture
+        <!-- HIDDEN SECTION 1: STARTUP FACTS -->
+        <div class="scroll-section hidden-section">
+            <h2>🚀 Startup Intelligence</h2>
+            <div class="content-grid">
+                <div class="fact-card">
+                    <h3>OpenAI's Expansion</h3>
+                    <p>OpenAI reached $86B valuation in 2024, with ChatGPT becoming the fastest-growing application ever. Their mission to ensure AI safety while advancing capabilities continues reshaping tech landscape.</p>
+                    <div class="date">📅 2024-2025</div>
                 </div>
-                <div class="status-item">
-                    <span class="status-dot"></span>Security Protocols
+                <div class="fact-card">
+                    <h3>Anthropic's Momentum</h3>
+                    <p>Anthropic, founded by former OpenAI researchers, raised $5B and focuses on Constitutional AI - building AI systems that are safer and more aligned with human values.</p>
+                    <div class="date">📅 2024</div>
                 </div>
-                <div class="status-item">
-                    <span class="status-dot"></span>Global Infrastructure
+                <div class="fact-card">
+                    <h3>DeepMind's Scientific Breakthroughs</h3>
+                    <p>DeepMind's AlphaFold solved 200M protein structures and their Gemini model competes with GPT-4. Recent advances in reasoning and multi-modal capabilities set new industry standards.</p>
+                    <div class="date">📅 2024</div>
+                </div>
+                <div class="fact-card">
+                    <h3>The AI Startup Boom</h3>
+                    <p>2024 saw unprecedented funding for AI startups: xAI ($6B), Scale AI ($7.65B), Databricks ($43B). The focus shifted from pure LLMs to vertical-specific AI solutions and infrastructure.</p>
+                    <div class="date">📅 2024-2025</div>
                 </div>
             </div>
         </div>
 
-        <!-- Coming Soon -->
-        <p class="coming-soon">
-            Launching Soon<span class="dots"></span>
-        </p>
+        <!-- HIDDEN SECTION 2: AI MODELS & BRANDS -->
+        <div class="scroll-section hidden-section">
+            <h2>🤖 Top AI Models & Leaders</h2>
+            <div class="content-grid">
+                <div class="fact-card">
+                    <h3>#1 OpenAI GPT-4 Turbo</h3>
+                    <p>128K context window, advanced reasoning, vision capabilities. The industry benchmark with GPT-4 Vision scoring 88.7% on the Bar Exam - outperforming human lawyers.</p>
+                    <div class="date">🏆 Industry Standard</div>
+                </div>
+                <div class="fact-card">
+                    <h3>#2 Google Gemini Ultra</h3>
+                    <p>Multimodal powerhouse exceeding GPT-4 on 30+ benchmarks. Native support for text, images, audio, and video. The most capable model for complex reasoning tasks.</p>
+                    <div class="date">🏆 Most Capable</div>
+                </div>
+                <div class="fact-card">
+                    <h3>#3 Anthropic Claude 3.5 Sonnet</h3>
+                    <p>Best in-context learning and reasoning. Scores 88% on AMC benchmark - demonstrating exceptional problem-solving. Preferred for enterprise applications requiring safety.</p>
+                    <div class="date">🏆 Most Safe</div>
+                </div>
+                <div class="fact-card">
+                    <h3>#4 Meta Llama 3.1</h3>
+                    <p>Open-source excellence with 405B parameters. Leading for on-device deployment and commercial applications. 86.8% score on AlpacaEval - proving open-source can compete.</p>
+                    <div class="date">🏆 Open Source Leader</div>
+                </div>
+                <div class="fact-card">
+                    <h3>#5 xAI Grok-2</h3>
+                    <p>Launched 2024 with 314B parameters. Real-time information access and powerful reasoning. Fastest inference speed in its class with 96% reduction in latency.</p>
+                    <div class="date">🏆 Fastest Growing</div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Footer -->
-        <div class="footer-info">
-            © 2026 AutenTICS | <a href="https://elautentico.online" target="_blank">elautentico.online</a> | Building the Future
+        <!-- HIDDEN SECTION 3: LATEST TRENDS -->
+        <div class="scroll-section hidden-section">
+            <h2>📈 Latest AI Trends & Developments</h2>
+            <div class="content-grid">
+                <div class="fact-card">
+                    <h3>Multimodal Everything</h3>
+                    <p>2024 saw explosion of multimodal models. Voice, video, 3D understanding integrated natively. Next: real-time video understanding with sub-100ms latency hitting production.</p>
+                    <div class="date">📅 Q4 2024</div>
+                </div>
+                <div class="fact-card">
+                    <h3>AI Agents Era</h3>
+                    <p>From chatbots to autonomous agents. Framework like Claude's tool use, OpenAI's function calling enabling agents to plan, reason, and act independently. Enterprise adoption accelerating.</p>
+                    <div class="date">📅 2024-2025</div>
+                </div>
+                <div class="fact-card">
+                    <h3>Reasoning Breakthroughs</h3>
+                    <p>OpenAI o1, DeepSeek R1, Google's Gemini reasoning mode. Models now spend compute on thinking before responding. 10x improvement on complex problem-solving benchmarks.</p>
+                    <div class="date">📅 Late 2024</div>
+                </div>
+                <div class="fact-card">
+                    <h3>Edge & On-Device AI</h3>
+                    <p>Smaller, faster models optimized for phones, browsers, and IoT. Llama 2-7B, Mistral 7B proving powerful inference possible without cloud. Privacy-first computing gaining momentum.</p>
+                    <div class="date">📅 Ongoing</div>
+                </div>
+                <div class="fact-card">
+                    <h3>AI for Code & Development</h3>
+                    <p>GitHub Copilot hitting 1M+ users. Codeium, Claude Dev, GPT Engineer competing. 40%+ code generated in some companies. Security and quality concerns emerging.</p>
+                    <div class="date">📅 2024-2025</div>
+                </div>
+                <div class="fact-card">
+                    <h3>Regulation & Compliance</h3>
+                    <p>EU AI Act enforcement. UK, Singapore, US frameworks emerging. Focus on transparency, bias detection, and accountability. Safe harbor provisions for research being negotiated.</p>
+                    <div class="date">📅 Ongoing</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mini-Game Modals -->
+    <div class="modal-overlay" id="gameModal">
+        <div class="modal-content">
+            <h2 id="gameTitle">Neural Architecture</h2>
+            <p id="gameDescription">Ready to test your knowledge?</p>
+            <canvas id="gameCanvas" class="game-canvas"></canvas>
+            <div id="gameInfo" style="color: var(--primary); margin: 20px 0;"></div>
+            <div class="game-controls">
+                <button class="game-btn" id="startGameBtn">Start Game</button>
+                <button class="game-btn" id="completeGameBtn" style="display:none;">Mark Complete</button>
+                <button class="game-btn" onclick="closeGameModal()" style="border-color: var(--secondary); color: var(--secondary);">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contribution Modal -->
+    <div class="contribution-modal" id="contributionModal">
+        <div class="contribution-content">
+            <h2>🌟 Join Our Mission 🌟</h2>
+            <p>We're building the future of authentication. Would you like to contribute to AutenTICS or submit a feature request?</p>
+            <div class="contribution-buttons">
+                <button class="contrib-btn yes" onclick="openContributionForm()">Yes, Let's Work</button>
+                <button class="contrib-btn" onclick="closeContributionModal()">Not Right Now</button>
+            </div>
+            <div class="form-container" id="formContainer">
+                <form id="contributionForm">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contribution">What would you like to contribute?</label>
+                        <textarea id="contribution" name="contribution" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit Contribution</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -723,27 +1301,312 @@
             }
         }
 
-        // Initialize particles on load
         window.addEventListener('load', createParticles);
 
-        // Add interactive glow effect to status items
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX;
-            const y = e.clientY;
-            const elements = document.querySelectorAll('.status-item, .progress-section');
-            elements.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                const distance = Math.hypot(x - (rect.left + rect.width / 2), y - (rect.top + rect.height / 2));
-                if (distance < 250) {
-                    const intensity = 1 - (distance / 250);
-                    el.style.boxShadow = `0 0 ${30 * intensity}px rgba(0, 255, 255, ${0.5 * intensity})`;
-                } else {
-                    el.style.boxShadow = '';
-                }
+        // Horizontal Scroll Logic
+        const scrollContainer = document.querySelector('.scroll-container');
+        let currentScroll = 0;
+        const sections = ['main', 'facts', 'ai-models', 'trends'];
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const scrollAmount = window.innerWidth;
+            if (e.key === 'ArrowRight') {
+                currentScroll = Math.min(currentScroll + scrollAmount, scrollAmount * 3);
+                scrollContainer.style.transform = `translateX(-${currentScroll}px)`;
+                updateMenuButtons();
+            } else if (e.key === 'ArrowLeft') {
+                currentScroll = Math.max(currentScroll - scrollAmount, 0);
+                scrollContainer.style.transform = `translateX(-${currentScroll}px)`;
+                updateMenuButtons();
+            }
+        });
+
+        // Mouse wheel for horizontal scroll
+        document.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) return;
+            e.preventDefault();
+            
+            const scrollAmount = window.innerWidth * 0.1;
+            if (e.deltaX > 0 || e.deltaY > 0) {
+                currentScroll = Math.min(currentScroll + scrollAmount, window.innerWidth * 3);
+            } else {
+                currentScroll = Math.max(currentScroll - scrollAmount, 0);
+            }
+            
+            scrollContainer.style.transform = `translateX(-${currentScroll}px)`;
+            updateMenuButtons();
+        }, { passive: false });
+
+        // Menu button navigation
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sectionIndex = sections.indexOf(btn.dataset.section);
+                currentScroll = sectionIndex * window.innerWidth;
+                scrollContainer.style.transform = `translateX(-${currentScroll}px)`;
+                updateMenuButtons();
             });
         });
 
-        // Animated percentage variations (hovering around 90%)
+        function updateMenuButtons() {
+            const sectionIndex = Math.round(currentScroll / window.innerWidth);
+            document.querySelectorAll('.menu-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === sectionIndex);
+            });
+        }
+
+        // Progress bar click to trigger contribution modal
+        document.getElementById('progressBar').addEventListener('click', () => {
+            document.getElementById('contributionModal').classList.add('active');
+        });
+
+        document.getElementById('progressSection').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('progressBar').parentElement) {
+                document.getElementById('contributionModal').classList.add('active');
+            }
+        });
+
+        // Game Modal Functions
+        const gameConfigs = {
+            neural: {
+                title: '🧠 Neural Architecture Challenge',
+                description: 'Pattern recognition game. Match the sequences to complete the challenge!',
+                game: drawNeuralGame
+            },
+            security: {
+                title: '🔐 Security Protocol Master',
+                description: 'Cyber security reaction game. Click the threats before they breach!',
+                game: drawSecurityGame
+            },
+            infrastructure: {
+                title: '🌐 Infrastructure Builder',
+                description: 'Network optimization game. Connect nodes efficiently!',
+                game: drawInfrastructureGame
+            }
+        };
+
+        let currentGame = null;
+        let gameState = { started: false, score: 0 };
+
+        document.querySelectorAll('.status-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const gameType = item.dataset.game;
+                openGameModal(gameType);
+            });
+        });
+
+        function openGameModal(gameType) {
+            currentGame = gameType;
+            const config = gameConfigs[gameType];
+            document.getElementById('gameTitle').textContent = config.title;
+            document.getElementById('gameDescription').textContent = config.description;
+            document.getElementById('gameModal').classList.add('active');
+            gameState = { started: false, score: 0 };
+        }
+
+        function closeGameModal() {
+            document.getElementById('gameModal').classList.remove('active');
+            currentGame = null;
+        }
+
+        document.getElementById('startGameBtn').addEventListener('click', () => {
+            gameState.started = true;
+            document.getElementById('startGameBtn').style.display = 'none';
+            document.getElementById('completeGameBtn').style.display = 'block';
+            document.getElementById('gameCanvas').classList.add('active');
+            
+            const config = gameConfigs[currentGame];
+            config.game();
+        });
+
+        document.getElementById('completeGameBtn').addEventListener('click', () => {
+            alert('🎉 Excellent! You\'ve completed the ' + currentGame + ' challenge!\n\nScore: ' + gameState.score + ' points\n\nKeep unlocking more secrets!');
+            closeGameModal();
+        });
+
+        // Game Drawing Functions
+        function drawNeuralGame() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            let particles = [];
+            for (let i = 0; i < 20; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    radius: Math.random() * 4 + 2
+                });
+            }
+
+            function animate() {
+                ctx.fillStyle = 'rgba(5, 8, 16, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                    ctx.fillStyle = '#00ffff';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowColor = '#00ffff';
+                    ctx.shadowBlur = 10;
+                });
+
+                gameState.score += 5;
+                document.getElementById('gameInfo').textContent = 'Score: ' + gameState.score + ' | Pattern Activity: Active';
+
+                if (gameState.started) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            animate();
+        }
+
+        function drawSecurityGame() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            let threats = [];
+            let blocked = 0;
+
+            function createThreat() {
+                threats.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: 15,
+                    color: '#ff0000'
+                });
+            }
+
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                threats.forEach((threat, i) => {
+                    const dist = Math.hypot(x - threat.x, y - threat.y);
+                    if (dist < threat.radius) {
+                        threats.splice(i, 1);
+                        blocked++;
+                        gameState.score += 10;
+                    }
+                });
+            });
+
+            function animate() {
+                ctx.fillStyle = 'rgba(5, 8, 16, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (Math.random() < 0.02) createThreat();
+
+                threats.forEach(threat => {
+                    ctx.fillStyle = threat.color;
+                    ctx.beginPath();
+                    ctx.arc(threat.x, threat.y, threat.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#ff00ff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                });
+
+                document.getElementById('gameInfo').textContent = 'Threats Blocked: ' + blocked + ' | Current Score: ' + gameState.score;
+
+                if (gameState.started && threats.length < 20) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            animate();
+        }
+
+        function drawInfrastructureGame() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            let nodes = [];
+            const nodeCount = 8;
+
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    x: Math.random() * (canvas.width - 100) + 50,
+                    y: Math.random() * (canvas.height - 100) + 50,
+                    radius: 12,
+                    connected: i === 0,
+                    id: i
+                });
+            }
+
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                nodes.forEach(node => {
+                    const dist = Math.hypot(x - node.x, y - node.y);
+                    if (dist < node.radius) {
+                        node.connected = true;
+                        gameState.score += 15;
+                    }
+                });
+            });
+
+            function animate() {
+                ctx.fillStyle = 'rgba(5, 8, 16, 0.15)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                nodes.forEach(node => {
+                    ctx.strokeStyle = node.connected ? '#00ff00' : '#ff00ff';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    ctx.fillStyle = node.connected ? '#00ff00' : '#ff00ff';
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, node.radius * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                const connected = nodes.filter(n => n.connected).length;
+                document.getElementById('gameInfo').textContent = 'Nodes Connected: ' + connected + '/' + nodeCount + ' | Score: ' + gameState.score;
+
+                if (gameState.started) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            animate();
+        }
+
+        // Contribution Modal Functions
+        function openContributionForm() {
+            document.getElementById('formContainer').classList.add('active');
+        }
+
+        function closeContributionModal() {
+            document.getElementById('contributionModal').classList.remove('active');
+            document.getElementById('formContainer').classList.remove('active');
+            document.getElementById('contributionForm').reset();
+        }
+
+        document.getElementById('contributionForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('🙏 Thank you for your interest in contributing!\n\nWe\'ll be in touch soon at ' + document.getElementById('email').value);
+            closeContributionModal();
+        });
+
+        // Animated percentage variations
         setTimeout(() => {
             const percentage = document.getElementById('percentage');
             const values = [90, 91, 90, 92, 90, 91, 92, 90];
@@ -755,7 +1618,7 @@
             }, 800);
         }, 3500);
 
-        // Responsive particle recreation on resize
+        // Responsive particle recreation
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
